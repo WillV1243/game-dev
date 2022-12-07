@@ -16,16 +16,4 @@ public class Key : MonoBehaviour {
 		return keyText.GetComponent<TextMeshProUGUI>().text;
 	}
 
-	public void OnLetterPress() {
-		Debug.Log(GetLetter());
-	}
-
-	public void OnEnterPress() {
-		Debug.Log("Enter pressed");
-	}
-
-	public void OnBackPress() {
-		Debug.Log("Back pressed");
-	}
-
 }

@@ -16,6 +16,20 @@ public class Letter : MonoBehaviour {
 		SetState(LetterState.Filled);
 	}
 
+	public void RemoveLetter() {
+		TextMeshProUGUI textComponent = letterText.GetComponent<TextMeshProUGUI>();
+
+		textComponent.text = "";
+
+		SetState(LetterState.Blank);
+	}
+
+	public string GetLetterText() {
+		TextMeshProUGUI textComponent = letterText.GetComponent<TextMeshProUGUI>();
+
+		return textComponent.text;
+	}
+
 	public void SetState(LetterState newState) {
 		state = newState;
 	}

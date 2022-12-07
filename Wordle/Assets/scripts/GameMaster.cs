@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameMaster : MonoBehaviour {
@@ -12,13 +13,20 @@ public class GameMaster : MonoBehaviour {
 		word = GetRandomWord();
 	}
 
-	// Update is called once per frame
-	void Update() {
+	public void GameSuccess() {
 
 	}
 
+	public void GameFail() {
+
+	}
+
+	public bool IsWordInList(string word) {
+		return Array.Exists<string>(words, listWord => listWord == word);
+	}
+
 	private string GetRandomWord() {
-		int randomIndex = Random.Range(0, words.Length - 1);
+		int randomIndex = UnityEngine.Random.Range(0, words.Length - 1);
 
 		return words[randomIndex];
 	}
