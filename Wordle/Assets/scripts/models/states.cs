@@ -1,3 +1,3 @@
-public enum LetterState { Blank, Filled, WrongLetter, WrongPosition, CorrectPosition }
+public enum LetterState { Blank, Absent, Present, Correct }
 
-public enum KeyState { NotUsed, WrongLetter, WrongPosition, CorrectPosition }
+public enum KeyState { NotUsed, Absent, Present, Correct }

@@ -4,6 +4,7 @@ public class GridManager : MonoBehaviour {
 
 	[SerializeField] private GameObject gridPanel;
 	[SerializeField] private GameMaster gameMaster;
+	[SerializeField] private KeyboardManager keyboardManager;
 
 	private GameObject[][] grid;
 
@@ -24,21 +25,6 @@ public class GridManager : MonoBehaviour {
 		currentColumn++;
 	}
 
-	public void HandleEnterPress() {
-		if (currentColumn < 5 || currentRow >= 6) return;
-
-		bool wordNotInList = !gameMaster.IsWordInList(GetWord());
-
-		if (wordNotInList) return;
-
-		// TODO correct word check
-		// TODO determine letter matches
-		// TODO change letter state of previous row
-
-		currentRow++;
-		currentColumn = 0;
-	}
-
 	public void HandleBackPress() {
 		if (currentColumn == 0) return;
 
@@ -46,7 +32,44 @@ public class GridManager : MonoBehaviour {
 
 		Letter cell = grid[currentRow][currentColumn].GetComponent<Letter>();
 
-		cell.RemoveLetter();
+		cell.RemoveLetterText();
+	}
+
+	public void HandleEnterPress() {
+		if (currentColumn < 5 || currentRow >= 6) return;
+
+		string guessWord = GetWord();
+		bool wordNotInList = !gameMaster.IsWordInList(guessWord);
+
+		if (wordNotInList) return;
+
+		SetLetterAndKeyStates();
+
+		if (gameMaster.IsWordCorrect(guessWord)) {
+			Debug.Log("You won!!!!");
+		}
+
+		currentRow++;
+		currentColumn = 0;
+	}
+
+	private void SetLetterAndKeyStates() {
+		for (int i = 0; i < grid[currentRow].Length; i++) {
+			Letter letter = grid[currentRow][i].GetComponent<Letter>();
+
+			letter.SetState(LetterState.Absent);
+			keyboardManager.SetKeyState(letter.GetLetterText(), KeyState.Absent);
+
+			if (gameMaster.IsLetterPresent(letter.GetLetterText())) {
+				letter.SetState(LetterState.Present);
+				keyboardManager.SetKeyState(letter.GetLetterText(), KeyState.Present);
+			}
+
+			if (gameMaster.IsLetterCorrect(letter.GetLetterText(), i)) {
+				letter.SetState(LetterState.Correct);
+				keyboardManager.SetKeyState(letter.GetLetterText(), KeyState.Correct);
+			}
+		}
 	}
 
 	private string GetWord() {

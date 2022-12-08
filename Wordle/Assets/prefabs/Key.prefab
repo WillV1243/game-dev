@@ -227,6 +227,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keyText: {fileID: 216549199813847596}
   keyButton: {fileID: 1991068423364442655}
+  spriteNotUsed: {fileID: 21300000, guid: d687c47f29245d34686f811936015aa3, type: 3}
+  spriteCorrect: {fileID: 21300000, guid: cf3cac9aa7bd7ee4f91710ee7ef4a2a9, type: 3}
+  spriteAbsent: {fileID: 21300000, guid: 7e5713f0aec92f8448e02ede9fb628b3, type: 3}
+  spritePresent: {fileID: 21300000, guid: 33ecfda035f80324e925b6fba816eb4b, type: 3}
 --- !u!1 &1991068423364442655
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,14 +1,13 @@
+using System;
 using UnityEngine;
 
 public class KeyboardManager : MonoBehaviour {
 
 	[SerializeField] private GameObject keyboardPanel;
+	[SerializeField] private GameMaster gameMaster;
 
 	private GameObject[] keyboard;
 	private GridManager gridManager;
-
-	private int currentRow = 0;
-	private int currentColumn = 0;
 
 	void Start() {
 		keyboard = GetKeyboard();
@@ -25,6 +24,21 @@ public class KeyboardManager : MonoBehaviour {
 
 	public void OnBackPress() {
 		gridManager.HandleBackPress();
+	}
+
+	public void SetKeyState(string letter, KeyState newState) {
+		Key key = GetKeyFromLetterText(letter).GetComponent<Key>();
+
+		key.SetState(newState);
+	}
+
+	private GameObject GetKeyFromLetterText(string letter) {
+		return Array.Find<GameObject>(keyboard, listKey => {
+			Key keyboardKey = listKey.GetComponent<Key>();
+			string letterText = keyboardKey.GetLetterText();
+
+			return letterText == letter;
+		});
 	}
 
 	private GameObject[] GetKeyboard() {

@@ -304,3 +304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   letterText: {fileID: 3623916074184919431}
   letterCell: {fileID: 3623916075280253713}
+  spriteBlank: {fileID: 21300000, guid: 85d7953d7e121094791528fb467e7d2f, type: 3}
+  spriteCorrect: {fileID: 21300000, guid: 38182cc92d0d6ac47b5006979ec7f479, type: 3}
+  spriteAbsent: {fileID: 21300000, guid: b745fd94770cdeb4983d83f139ce575a, type: 3}
+  spritePresent: {fileID: 21300000, guid: 7abf9691a203db942831fba061ad6062, type: 3}

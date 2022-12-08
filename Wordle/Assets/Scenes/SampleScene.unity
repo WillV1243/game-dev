@@ -7211,6 +7211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPanel: {fileID: 707920436}
   gameMaster: {fileID: 897661836}
+  keyboardManager: {fileID: 1868309839}
 --- !u!114 &1868309839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7224,6 +7225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyboardPanel: {fileID: 1192677189}
+  gameMaster: {fileID: 897661836}
 --- !u!1001 &1893908214
 PrefabInstance:
   m_ObjectHideFlags: 0
