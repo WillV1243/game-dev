@@ -35,6 +35,8 @@ public class Letter : MonoBehaviour {
 	}
 
 	public void SetState(LetterState newState) {
+		if (state == LetterState.Correct) return;
+
 		ChangeSprite(newState);
 
 		state = newState;

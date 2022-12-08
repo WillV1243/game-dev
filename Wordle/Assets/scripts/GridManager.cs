@@ -36,7 +36,7 @@ public class GridManager : MonoBehaviour {
 	}
 
 	public void HandleEnterPress() {
-		if (currentColumn < 5 || currentRow >= 6) return;
+		if (currentColumn < 5) return;
 
 		string guessWord = GetWord();
 		bool wordNotInList = !gameMaster.IsWordInList(guessWord);
@@ -46,8 +46,14 @@ public class GridManager : MonoBehaviour {
 		SetLetterAndKeyStates();
 
 		if (gameMaster.IsWordCorrect(guessWord)) {
-			Debug.Log("You won!!!!");
+			gameMaster.GameSuccess();
+			return;
 		}
+
+		if (currentRow >= 5) {
+			gameMaster.GameFail();
+			return;
+		};
 
 		currentRow++;
 		currentColumn = 0;

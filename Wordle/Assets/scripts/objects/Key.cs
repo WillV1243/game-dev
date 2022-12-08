@@ -19,6 +19,8 @@ public class Key : MonoBehaviour {
 	}
 
 	public void SetState(KeyState newState) {
+		if (state == KeyState.Correct) return;
+
 		ChangeSprite(newState);
 
 		state = newState;

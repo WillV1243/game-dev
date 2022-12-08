@@ -1,8 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour {
+
 	[SerializeField] private TextAsset wordsList;
+	[SerializeField] private GameObject successPanel;
+	[SerializeField] private GameObject failPanel;
 
 	private string[] words;
 	private string word;
@@ -13,11 +17,15 @@ public class GameMaster : MonoBehaviour {
 	}
 
 	public void GameSuccess() {
-		// TODO show splash if successful then option to reload game
+		successPanel.SetActive(true);
 	}
 
 	public void GameFail() {
-		// TODO show splash if fail then option to reload game
+		failPanel.SetActive(true);
+	}
+
+	public void ResetGame() {
+		SceneManager.LoadScene("GameScene");
 	}
 
 	public bool IsWordCorrect(string word) {
@@ -25,6 +33,7 @@ public class GameMaster : MonoBehaviour {
 	}
 
 	public bool IsWordInList(string word) {
+		Debug.Log(this.word);
 		return Array.Exists<string>(words, listWord => listWord == word);
 	}
 
