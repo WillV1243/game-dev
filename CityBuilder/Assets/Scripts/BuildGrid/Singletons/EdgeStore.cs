@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class EdgeStore {
 	private static EdgeStore instance;
 
-	private Dictionary<Vertex[], Edge> edges = new();
+	private Dictionary<Vector2Int[], Edge> edges = new Dictionary<Vector2Int[], Edge>(new Vector2IntArrayComparer());
 
 	public static EdgeStore getInstance {
 		get {
@@ -14,23 +15,23 @@ public class EdgeStore {
 		}
 	}
 
-	public Dictionary<Vertex[], Edge> GetEdges() {
+	public Dictionary<Vector2Int[], Edge> GetEdges() {
 		return edges;
 	}
 
-	public void AddEdge(Vertex[] vertices) {
-		if (vertices.Length != 2) return;
+	public void AddEdge(Vector2Int[] coordinates, Vertex vertexA, Vertex vertexB) {
+		if (vertexA == null || vertexB == null) return;
 
-		if (edges.ContainsKey(vertices)) return;
+		if (edges.ContainsKey(coordinates)) return;
 
-		edges.Add(vertices, new Edge(vertices[0], vertices[1]));
+		edges.Add(coordinates, new Edge(vertexA, vertexB));
 	}
 
-	public Edge GetEdge(Vertex[] vertices) {
-		if (vertices.Length != 2) return null;
+	public Edge GetEdge(Vector2Int[] coordinates) {
+		if (coordinates.Length != 2) return null;
 
-		if (!edges.ContainsKey(vertices)) return null;
+		if (!edges.ContainsKey(coordinates)) return null;
 
-		return edges[vertices];
+		return edges[coordinates];
 	}
 }

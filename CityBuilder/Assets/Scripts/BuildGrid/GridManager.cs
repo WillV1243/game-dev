@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GridManager : MonoBehaviour {
@@ -6,9 +6,17 @@ public class GridManager : MonoBehaviour {
 	[Header("Grid Settings")]
 	public int gridSizeX = 100;
 	public int gridSizeZ = 100;
-	public int tileSize = 1;
+	public float tileSize = 1f;
 	public int gridOffsetX = 0;
 	public int gridOffsetZ = 0;
+
+	[Header("References")]
+	public GameObject tilePrefab;
+	public Transform gridContainer;
+
+	[Header("Materials")]
+	public Material tileMaterial;
+	public Material disabledTileMaterial;
 
 	private TileStore tileStore;
 	private EdgeStore edgeStore;
@@ -16,16 +24,30 @@ public class GridManager : MonoBehaviour {
 
 	private void Start() {
 		InitializeGrid();
+
+		CreateGrid();
 	}
 
 	private void InitializeGrid() {
 		CreateVertexStore();
 		CreateEdgeStore();
 		CreateTileStore();
+	}
 
-		Debug.Log(vertexStore.GetVertices().Count);
-		Debug.Log(edgeStore.GetEdges().Count);
-		Debug.Log(tileStore.GetTiles().Count);
+	private void CreateGrid() {
+		tileStore = TileStore.getInstance;
+
+		foreach (KeyValuePair<Vector2Int, Tile> pair in tileStore.GetTiles()) {
+			GameObject tileObject = Instantiate(tilePrefab);
+
+			tileObject.GetComponent<BuildGridTile>().tileData = pair.Value;
+
+			Vector3 tilePosition = new(pair.Key.x + (tileSize / 2), 0, pair.Key.y + (tileSize / 2));
+
+			tileObject.name = "Tile (" + pair.Key.x.ToString() + ", " + pair.Key.y.ToString() + ")";
+			tileObject.transform.SetParent(gridContainer);
+			tileObject.transform.position = tilePosition;
+		}
 	}
 
 	private void CreateVertexStore() {
@@ -34,7 +56,7 @@ public class GridManager : MonoBehaviour {
 		for (int z = gridOffsetZ; z < gridOffsetZ + gridSizeZ; z++) {
 			for (int x = gridOffsetX; x < gridOffsetX + gridSizeX; x++) {
 
-				Vector3 coordinate = new Vector3(x, 0, z);
+				Vector2Int coordinate = new Vector2Int(x, z);
 				vertexStore.AddVertex(coordinate);
 
 			}
@@ -55,24 +77,25 @@ public class GridManager : MonoBehaviour {
 									*					|
 									----------*  <--- current vertex
 								D             C	
-		
+
 				*/
-				Vertex vertexB = vertexStore.GetVertex(new Vector3(x, 0, z - 1));
-				Vertex vertexC = vertexStore.GetVertex(new Vector3(x, 0, z)); // current vertex
-				Vertex vertexD = vertexStore.GetVertex(new Vector3(x - 1, 0, z));
+				Vector2Int B = new Vector2Int(x, z + 1);
+				Vector2Int C = new Vector2Int(x, z);
+				Vector2Int D = new Vector2Int(x - 1, z);
 
-				if (vertexB != null && vertexC != null) {
-					Vertex[] verticalEdge = new Vertex[2] { vertexB, vertexC };
+				Vertex vertexB = vertexStore.GetVertex(B);
+				Vertex vertexC = vertexStore.GetVertex(C);
+				Vertex vertexD = vertexStore.GetVertex(D);
 
-					edgeStore.AddEdge(verticalEdge);
-				}
-
-				if (vertexD != null && vertexC != null) {
-					Vertex[] horizontalEdge = new Vertex[2] { vertexD, vertexC };
-
-					edgeStore.AddEdge(horizontalEdge);
-				}
+				AddEdgeToStore(new Vector2Int[] { B, C }, vertexB, vertexC);
+				AddEdgeToStore(new Vector2Int[] { D, C }, vertexD, vertexC);
 			}
+		}
+	}
+
+	private void AddEdgeToStore(Vector2Int[] coordinates, Vertex vertexA, Vertex vertexB) {
+		if (vertexA != null && vertexB != null) {
+			edgeStore.AddEdge(coordinates, vertexA, vertexB);
 		}
 	}
 
@@ -82,6 +105,7 @@ public class GridManager : MonoBehaviour {
 		for (int z = gridOffsetZ; z < gridOffsetZ + gridSizeZ; z++) {
 			for (int x = gridOffsetX; x < gridOffsetX + gridSizeX; x++) {
 				/*
+				 
 											AB
 								A             B
 									* ------- *
@@ -91,33 +115,36 @@ public class GridManager : MonoBehaviour {
 									* ------- *  <--- current vertex
 								D             C	
 											CD
+
 				*/
-				Vector3 A = new Vector3(x - 1, 0, z - 1);
-				Vector3 B = new Vector3(x, 0, z - 1);
-				Vector3 C = new Vector3(x, 0, z); // current vertex
-				Vector3 D = new Vector3(x - 1, 0, z);
+				Vector2Int A = new Vector2Int(x - 1, z + 1);
+				Vector2Int B = new Vector2Int(x, z + 1);
+				Vector2Int C = new Vector2Int(x, z);
+				Vector2Int D = new Vector2Int(x - 1, z);
 
 				Vertex vertexA = vertexStore.GetVertex(A);
 				Vertex vertexB = vertexStore.GetVertex(B);
 				Vertex vertexC = vertexStore.GetVertex(C);
 				Vertex vertexD = vertexStore.GetVertex(D);
 
-				Vertex[] AB = new Vertex[2] { vertexA, vertexB };
-				Vertex[] BC = new Vertex[2] { vertexB, vertexC };
-				Vertex[] CD = new Vertex[2] { vertexC, vertexD };
-				Vertex[] AD = new Vertex[2] { vertexA, vertexD };
+				if (vertexA == null || vertexB == null || vertexC == null || vertexD == null) continue;
+
+				Vector2Int[] AB = new Vector2Int[2] { A, B };
+				Vector2Int[] BC = new Vector2Int[2] { B, C };
+				Vector2Int[] DC = new Vector2Int[2] { D, C };
+				Vector2Int[] AD = new Vector2Int[2] { A, D };
 
 				Edge edgeAB = edgeStore.GetEdge(AB);
 				Edge edgeBC = edgeStore.GetEdge(BC);
-				Edge edgeCD = edgeStore.GetEdge(CD);
+				Edge edgeDC = edgeStore.GetEdge(DC);
 				Edge edgeAD = edgeStore.GetEdge(AD);
 
+				if (edgeAB == null || edgeBC == null || edgeDC == null || edgeAD == null) continue;
+
 				Vertex[] vertices = new Vertex[4] { vertexA, vertexB, vertexC, vertexD };
-				Edge[] edges = new Edge[4] { edgeAB, edgeBC, edgeCD, edgeAD };
+				Edge[] edges = new Edge[4] { edgeAB, edgeBC, edgeDC, edgeAD };
 
-				if (vertices.Contains(null) || edges.Contains(null)) continue;
-
-				Vector3 coordinates = new Vector3(x - 1, 0, z - 1);
+				Vector2Int coordinates = new Vector2Int(x, z);
 
 				tileStore.AddTile(coordinates, vertices, edges);
 			}

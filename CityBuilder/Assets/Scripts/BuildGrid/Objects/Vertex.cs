@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class Vertex {
 	public float x;
-	public float z;
+	public float y;
 
-	public Vertex(Vector3 coordinate) {
+	public Vertex(Vector2Int coordinate) {
 		this.x = coordinate.x;
-		this.z = coordinate.z;
+		this.y = coordinate.y;
 	}
 }

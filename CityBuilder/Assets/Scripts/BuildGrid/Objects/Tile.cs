@@ -20,6 +20,8 @@ public class Tile {
 	public Edge edgeDC;
 	public Edge edgeAD;
 
+	public bool isDisabled = false;
+
 	public Tile(Vertex[] vertices, Edge[] edges) {
 		vertexA = vertices[0];
 		vertexB = vertices[1];
