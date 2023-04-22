@@ -25,16 +25,16 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	private void HandleMoveForward() {
-		cameraMovement.MoveCamera(Vector3.forward);
+		cameraMovement.MoveCamera(transform.forward);
 	}
 	private void HandleMoveRight() {
-		cameraMovement.MoveCamera(Vector3.right);
+		cameraMovement.MoveCamera(transform.right);
 	}
 	private void HandleMoveBack() {
-		cameraMovement.MoveCamera(Vector3.back);
+		cameraMovement.MoveCamera(-transform.forward);
 	}
 	private void HandleMoveLeft() {
-		cameraMovement.MoveCamera(Vector3.left);
+		cameraMovement.MoveCamera(-transform.right);
 	}
 
 	private void HandleRotateLeft() {

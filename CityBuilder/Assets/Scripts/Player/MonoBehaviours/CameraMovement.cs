@@ -11,9 +11,7 @@ public class CameraMovement : MonoBehaviour {
 	public float zoomSpeed = 5f;
 
 	public void MoveCamera(Vector3 inputVector) {
-		Vector3 movementVector = Quaternion.Euler(0, 45, 0) * inputVector;
-
-		transform.position += movementVector * Time.deltaTime * cameraMovementSpeed;
+		transform.position += inputVector * Time.deltaTime * cameraMovementSpeed;
 	}
 
 	public void RotateCamera(RotationDirection rotationDirection) {
