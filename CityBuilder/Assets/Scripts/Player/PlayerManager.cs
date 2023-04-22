@@ -4,46 +4,91 @@ public class PlayerManager : MonoBehaviour {
 
 	[Header("References")]
 	public InputManager inputManager;
+	public CameraMovement cameraMovement;
 
 	private PlayerState playerState = PlayerState.Idle;
 
 	private void Start() {
-		inputManager.OnMouseClick += HandleMouseClick;
-	}
+		inputManager.OnMouseLeftClick += HandleMouseClick;
 
-	private void HandleMouseClick(Vector3 position) {
-		float firstMinDistance = float.MaxValue;
-		float secondMinDistance = float.MaxValue;
+		inputManager.OnMoveForward += HandleMoveForward;
+		inputManager.OnMoveRight += HandleMoveRight;
+		inputManager.OnMoveBack += HandleMoveBack;
+		inputManager.OnMoveLeft += HandleMoveLeft;
 
-		Vector2Int closestVertex = Vector2Int.zero;
-		Vector2Int secondClosestVertex = closestVertex;
-
-		Vector2Int[] vertexCoordinates = new Vector2Int[4];
-
-		vertexCoordinates[0] = new Vector2Int(Mathf.FloorToInt(position.x), Mathf.CeilToInt(position.z));
-		vertexCoordinates[1] = new Vector2Int(Mathf.CeilToInt(position.x), Mathf.CeilToInt(position.z));
-		vertexCoordinates[2] = new Vector2Int(Mathf.CeilToInt(position.x), Mathf.FloorToInt(position.z));
-		vertexCoordinates[3] = new Vector2Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.z));
-
-		foreach (Vector2Int vertex in vertexCoordinates) {
-			float distance = Vector2.Distance(position, vertex);
-
-			if (distance < firstMinDistance) {
-				secondMinDistance = firstMinDistance;
-				firstMinDistance = distance;
-				secondClosestVertex = closestVertex;
-				closestVertex = vertex;
-			}
-		}
-
-		// I have no idea whats happening here...
-		// something to do with the keys for edges + tiles
+		inputManager.OnRotateRight += HandleRotateRight;
+		inputManager.OnRotateLeft += HandleRotateLeft;
 	}
 
 	public void ChangeState(PlayerState state) {
 		playerState = state;
+	}
 
-		Debug.Log("PlayerState changed: " + playerState.ToString());
+	private void HandleMoveForward() {
+		cameraMovement.MoveCamera(Vector3.forward);
+	}
+	private void HandleMoveRight() {
+		cameraMovement.MoveCamera(Vector3.right);
+	}
+	private void HandleMoveBack() {
+		cameraMovement.MoveCamera(Vector3.back);
+	}
+	private void HandleMoveLeft() {
+		cameraMovement.MoveCamera(Vector3.left);
+	}
+
+	private void HandleRotateLeft() {
+		cameraMovement.RotateCamera(RotationDirection.Left);
+	}
+	private void HandleRotateRight() {
+		cameraMovement.RotateCamera(RotationDirection.Right);
+	}
+
+	private void HandleMouseClick(Vector3 position) {
+		Vector2 flattenedPosition = new(position.x, position.z);
+
+		switch (playerState) {
+			case PlayerState.Idle:
+				break;
+
+			case PlayerState.TileBuilding:
+				HandleBuildTile(flattenedPosition);
+				break;
+
+			case PlayerState.PathBuilding:
+				HandleBuildPath(flattenedPosition);
+				break;
+
+			case PlayerState.NodeBuilding:
+				HandleBuildNode(flattenedPosition);
+				break;
+		}
+	}
+
+	private void HandleBuildTile(Vector2 flattenedPosition) {
+		Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(flattenedPosition);
+
+		Tile tile = TileStore.getInstance.GetTile(tileCoordinates);
+
+		Debug.Log(tile);
+	}
+
+	private void HandleBuildPath(Vector2 flattenedPosition) {
+		Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(flattenedPosition);
+		Vector2Int[] edgeCoordinates = PlayerUtils.GetEdgeCoordinates(tileCoordinates, flattenedPosition);
+
+		Edge edge = EdgeStore.getInstance.GetEdge(edgeCoordinates);
+
+		Debug.Log(edge);
+	}
+
+	private void HandleBuildNode(Vector2 flattenPosition) {
+		Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(flattenPosition);
+		Vector2Int vertexCoordinates = PlayerUtils.GetVertexCoordinates(tileCoordinates, flattenPosition);
+
+		Vertex vertex = VertexStore.getInstance.GetVertex(vertexCoordinates);
+
+		Debug.Log(vertex);
 	}
 
 }

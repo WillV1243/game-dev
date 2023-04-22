@@ -1,11 +1,16 @@
 using UnityEngine;
 
 public class Vertex {
-	public float x;
-	public float y;
+	public int x, y;
+
+	public bool isDisabled = true;
 
 	public Vertex(Vector2Int coordinate) {
-		this.x = coordinate.x;
-		this.y = coordinate.y;
+		x = coordinate.x;
+		y = coordinate.y;
+	}
+
+	public void Enable() {
+		isDisabled = true;
 	}
 }

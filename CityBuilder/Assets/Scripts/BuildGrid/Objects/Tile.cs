@@ -10,17 +10,10 @@ public class Tile {
 					D             C	
 								DC
 	*/
-	public Vertex vertexA;
-	public Vertex vertexB;
-	public Vertex vertexC;
-	public Vertex vertexD;
+	public Vertex vertexA, vertexB, vertexC, vertexD;
+	public Edge edgeAB, edgeBC, edgeDC, edgeAD;
 
-	public Edge edgeAB;
-	public Edge edgeBC;
-	public Edge edgeDC;
-	public Edge edgeAD;
-
-	public bool isDisabled = false;
+	public bool isDisabled = true;
 
 	public Tile(Vertex[] vertices, Edge[] edges) {
 		vertexA = vertices[0];
@@ -32,5 +25,27 @@ public class Tile {
 		edgeBC = edges[1];
 		edgeDC = edges[2];
 		edgeAD = edges[3];
+	}
+
+	public void Enable() {
+		isDisabled = false;
+
+		vertexA.Enable();
+		vertexB.Enable();
+		vertexC.Enable();
+		vertexD.Enable();
+
+		edgeAB.Enable();
+		edgeBC.Enable();
+		edgeDC.Enable();
+		edgeAD.Enable();
+	}
+
+	public Vertex[] GetVertices() {
+		return new Vertex[4] { vertexA, vertexB, vertexC, vertexD };
+	}
+
+	public Edge[] GetEdges() {
+		return new Edge[4] { edgeAB, edgeBC, edgeDC, edgeAD };
 	}
 }

@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 80697fac0bd8ee941a54d3e3a8fa30bc, type: 2}
+  - {fileID: 2100000, guid: 15c5d0a4bc61d0540b45003ca11e0779, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -143,6 +143,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileObject: {fileID: 6257057624134779115}
-  tagToMakeTileDisabled: Terrain
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 8
   tileMaterial: {fileID: 2100000, guid: 80697fac0bd8ee941a54d3e3a8fa30bc, type: 2}
   disabledTileMaterial: {fileID: 2100000, guid: 15c5d0a4bc61d0540b45003ca11e0779, type: 2}
+  detectionDistance: 1000
+  tileSize: 0
