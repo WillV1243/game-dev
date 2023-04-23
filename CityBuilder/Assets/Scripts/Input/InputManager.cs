@@ -8,7 +8,6 @@ public class InputManager : MonoBehaviour {
 
 	[Header("Layers")]
 	public LayerMask gridLayer;
-	public LayerMask buildingLayer;
 
 	[Header("Actions")]
 	public Action<Vector3> OnMouseLeftClick, OnMouseLeftHold, OnMouseLeftUp;
@@ -40,55 +39,6 @@ public class InputManager : MonoBehaviour {
 
 		CheckZoomIn();
 		CheckZoomOut();
-	}
-
-	private void CheckMoveForward() {
-		if (Input.GetKey(KeyCode.W)) {
-			OnMoveForward.Invoke();
-		}
-	}
-	private void CheckMoveRight() {
-		if (Input.GetKey(KeyCode.D)) {
-			OnMoveRight.Invoke();
-		}
-	}
-	private void CheckMoveBack() {
-		if (Input.GetKey(KeyCode.S)) {
-			OnMoveBack.Invoke();
-		}
-	}
-	private void CheckMoveLeft() {
-		if (Input.GetKey(KeyCode.A)) {
-			OnMoveLeft.Invoke();
-		}
-	}
-
-	private void CheckRotateRight() {
-		if (Input.GetKey(KeyCode.E)) {
-			OnRotateRight.Invoke();
-		}
-	}
-	private void CheckRotateLeft() {
-		if (Input.GetKey(KeyCode.Q)) {
-			OnRotateLeft.Invoke();
-		}
-	}
-
-	private void CheckZoomIn() {
-		if (Input.GetKey(KeyCode.E)) {
-			OnRotateRight.Invoke();
-		}
-	}
-	private void CheckZoomOut() {
-		if (Input.GetKey(KeyCode.Q)) {
-			OnRotateLeft.Invoke();
-		}
-	}
-
-	private void CheckMouseHover() {
-		Vector3? position = RaycastToGrid();
-
-		if (position != null) OnMouseHover?.Invoke(position.Value);
 	}
 
 	private void CheckLeftClickDownEvent() {
@@ -135,9 +85,58 @@ public class InputManager : MonoBehaviour {
 		}
 	}
 
+	private void CheckMouseHover() {
+		Vector3? position = RaycastToGrid();
+
+		if (position != null) OnMouseHover?.Invoke(position.Value);
+	}
+
+	private void CheckMoveForward() {
+		if (Input.GetKey(KeyCode.W)) {
+			OnMoveForward.Invoke();
+		}
+	}
+	private void CheckMoveRight() {
+		if (Input.GetKey(KeyCode.D)) {
+			OnMoveRight.Invoke();
+		}
+	}
+	private void CheckMoveBack() {
+		if (Input.GetKey(KeyCode.S)) {
+			OnMoveBack.Invoke();
+		}
+	}
+	private void CheckMoveLeft() {
+		if (Input.GetKey(KeyCode.A)) {
+			OnMoveLeft.Invoke();
+		}
+	}
+
+	private void CheckRotateRight() {
+		if (Input.GetKey(KeyCode.E)) {
+			OnRotateRight.Invoke();
+		}
+	}
+	private void CheckRotateLeft() {
+		if (Input.GetKey(KeyCode.Q)) {
+			OnRotateLeft.Invoke();
+		}
+	}
+
+	private void CheckZoomIn() {
+		if (Input.GetKey(KeyCode.E)) {
+			OnRotateRight.Invoke();
+		}
+	}
+	private void CheckZoomOut() {
+		if (Input.GetKey(KeyCode.Q)) {
+			OnRotateLeft.Invoke();
+		}
+	}
+
 	private Vector3? RaycastToGrid() {
 		Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-		int layerMask = gridLayer | buildingLayer;
+		int layerMask = gridLayer;
 
 		if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask)) {
 			Debug.DrawLine(ray.origin, hit.point, Color.magenta, 2);

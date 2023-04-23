@@ -9,4 +9,8 @@ public class UIManager : MonoBehaviour {
 		playerManager.ChangeState(PlayerState.Building);
 	}
 
+	public void ChangePlayerStateRemoving() {
+		playerManager.ChangeState(PlayerState.Removing);
+	}
+
 }

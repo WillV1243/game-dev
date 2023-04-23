@@ -1,0 +1,11 @@
+using UnityEngine;
+
+public abstract class PlayerStateBase : MonoBehaviour {
+	public abstract PlayerState GetStateType();
+
+	public delegate void HandleMouseClickCallback(bool success);
+
+	public abstract void HandleMouseClick(Vector2 gridPosition, HandleMouseClickCallback callback = null);
+
+	public abstract void HandleMouseHover(Vector2 gridPosition);
+}

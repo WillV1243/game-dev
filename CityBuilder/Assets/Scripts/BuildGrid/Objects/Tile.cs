@@ -13,7 +13,7 @@ public class Tile {
 	public Vertex vertexA, vertexB, vertexC, vertexD;
 	public Edge edgeAB, edgeBC, edgeDC, edgeAD;
 
-	public bool isDisabled = true;
+	private TileState tileState = TileState.Disabled;
 
 	public Tile(Vertex[] vertices, Edge[] edges) {
 		vertexA = vertices[0];
@@ -27,8 +27,28 @@ public class Tile {
 		edgeAD = edges[3];
 	}
 
+	public TileState GetState() {
+		return tileState;
+	}
+
+	public void ChangeState(TileState state) {
+		tileState = state;
+	}
+
+	public Vertex[] GetVertices() {
+		return new Vertex[4] { vertexA, vertexB, vertexC, vertexD };
+	}
+
+	public Edge[] GetEdges() {
+		return new Edge[4] { edgeAB, edgeBC, edgeDC, edgeAD };
+	}
+
+	public bool IsTileBuildable() {
+		return tileState != TileState.Disabled && tileState != TileState.Occupied;
+	}
+
 	public void Enable() {
-		isDisabled = false;
+		ChangeState(TileState.Unoccupied);
 
 		vertexA.Enable();
 		vertexB.Enable();
@@ -39,13 +59,5 @@ public class Tile {
 		edgeBC.Enable();
 		edgeDC.Enable();
 		edgeAD.Enable();
-	}
-
-	public Vertex[] GetVertices() {
-		return new Vertex[4] { vertexA, vertexB, vertexC, vertexD };
-	}
-
-	public Edge[] GetEdges() {
-		return new Edge[4] { edgeAB, edgeBC, edgeDC, edgeAD };
 	}
 }

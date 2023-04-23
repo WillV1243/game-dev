@@ -125,7 +125,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 66
+  controlID: 169
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 67
+  controlID: 80
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 8096}
   vertical: 0
-  controlID: 68
+  controlID: 81
 --- !u!114 &14
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -394,22 +394,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Player/MonoBehaviours
+    - Assets/Scripts/Player
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/Player/MonoBehaviours
+  - Assets/Scripts/Player
   m_LastFoldersGridSize: -1
   m_LastProjectPath: S:\Files\Repos\Personal Github\game-dev\CityBuilder
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: b8580000
-    m_LastClickedID: 22712
-    m_ExpandedIDs: 0000000082580000845800009258000000ca9a3b
+    m_SelectedIDs: ca580000
+    m_LastClickedID: 22730
+    m_ExpandedIDs: 00000000b8580000ba580000ca580000d458000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -437,7 +437,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000008258000084580000
+    m_ExpandedIDs: 00000000b8580000ba580000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -567,9 +567,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: c0570000
-      m_LastClickedID: 22464
-      m_ExpandedIDs: 36fbffff9e570000c0570000c8570000
+      m_SelectedIDs: de090000
+      m_LastClickedID: 0
+      m_ExpandedIDs: 36fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -852,9 +852,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 17.93634, y: 10.913427, z: 33.450867}
+    m_Target: {x: -8.332917, y: 18.627672, z: -8.029472}
     speed: 2
-    m_Value: {x: 17.93634, y: 10.913427, z: 33.450867}
+    m_Value: {x: -8.332917, y: 18.627672, z: -8.029472}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -901,13 +901,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.42226413, y: 0.2512106, z: -0.1230262, w: 0.86223906}
+    m_Target: {x: 0.41602036, y: 0.27608258, z: -0.13418128, w: 0.85598147}
     speed: 2
-    m_Value: {x: 0.42226303, y: 0.25120994, z: -0.12302588, w: 0.8622368}
+    m_Value: {x: 0.41601968, y: 0.27608213, z: -0.13418105, w: 0.85598004}
   m_Size:
-    m_Target: 60.61471
+    m_Target: 24.244616
     speed: 2
-    m_Value: 60.61471
+    m_Value: 24.244616
   m_Ortho:
     m_Target: 0
     speed: 2

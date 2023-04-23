@@ -1,18 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingCreation : MonoBehaviour {
-
-	[Header("References")]
-	public GameObject buildingContainer;
-
-	[Header("Prefabs")]
-	public GameObject buildingPrefab;
-	public GameObject buildingHighlightPrefab;
+public class BuildingState : PlayerStateBase {
 
 	private GameObject currentBuildingHighlight;
 
-	public void CreateBuilding(Vector2 gridPosition, out bool success) {
+	public override PlayerState GetStateType() {
+		return PlayerState.Building;
+	}
+
+	public override void HandleMouseClick(Vector2 gridPosition, HandleMouseClickCallback callback = null) {
 		Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
 
 		Dictionary<Vector2Int[], Tile> tiles = TileStore.getInstance.GetTileNeighbours(rootTile, new Vector2Int(2, 2));
@@ -20,7 +17,7 @@ public class BuildingCreation : MonoBehaviour {
 		foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
 			if (!pair.Value.IsTileBuildable()) {
 				Debug.Log("Not buildable!!!");
-				success = false;
+				callback(false);
 				return;
 			};
 		}
@@ -31,10 +28,10 @@ public class BuildingCreation : MonoBehaviour {
 			pair.Value.ChangeState(TileState.Occupied);
 		}
 
-		success = true;
+		callback(true);
 	}
 
-	public void CreateBuildingHighlight(Vector2 gridPosition) {
+	public override void HandleMouseHover(Vector2 gridPosition) {
 		Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
 
 		if (currentBuildingHighlight == null) {
@@ -49,11 +46,13 @@ public class BuildingCreation : MonoBehaviour {
 	}
 
 	private void InstantiateBuilding(Vector3 buildingPosition) {
+		BuildingReferences playerReferences = GetComponent<BuildingReferences>();
+
 		Destroy(currentBuildingHighlight);
 
-		GameObject building = Instantiate(buildingPrefab);
+		GameObject building = Instantiate(playerReferences.buildingPrefab);
 
-		building.transform.parent = buildingContainer.transform;
+		building.transform.parent = playerReferences.buildingContainer.transform;
 		building.transform.position = buildingPosition;
 	}
 
@@ -68,8 +67,10 @@ public class BuildingCreation : MonoBehaviour {
 	}
 
 	private void InstantiateBuildingHighlight(Vector3 buildingPosition) {
-		currentBuildingHighlight = Instantiate(buildingHighlightPrefab);
-		currentBuildingHighlight.transform.parent = buildingContainer.transform;
+		BuildingReferences playerReferences = GetComponent<BuildingReferences>();
+
+		currentBuildingHighlight = Instantiate(playerReferences.buildingHighlightPrefab);
+		currentBuildingHighlight.transform.parent = playerReferences.buildingContainer.transform;
 		currentBuildingHighlight.transform.position = buildingPosition;
 	}
 

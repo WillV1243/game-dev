@@ -6,13 +6,14 @@ public class PlayerManager : MonoBehaviour {
 	[Header("References")]
 	public InputManager inputManager;
 	public CameraMovement cameraMovement;
-	public BuildingCreation buildingCreation;
 
 	public Action<PlayerState[]> OnChangePlayerState;
 
-	private PlayerState playerState = PlayerState.Idle;
+	private PlayerStateBase playerState;
 
 	private void Start() {
+		playerState = GetComponent<PlayerStateBase>();
+
 		inputManager.OnMouseLeftClick += HandleMouseClick;
 
 		inputManager.OnMoveForward += HandleMoveForward;
@@ -23,16 +24,32 @@ public class PlayerManager : MonoBehaviour {
 		inputManager.OnRotateRight += HandleRotateRight;
 		inputManager.OnRotateLeft += HandleRotateLeft;
 
-		OnChangePlayerState += IsPlayerBuilding;
+		OnChangePlayerState += HandlePlayerBuilding;
 	}
 
 	public void ChangeState(PlayerState state) {
-		OnChangePlayerState.Invoke(new PlayerState[2] { state, playerState });
+		if (state == playerState.GetStateType()) return;
 
-		playerState = state;
+		OnChangePlayerState.Invoke(new PlayerState[2] { state, GetComponent<PlayerStateBase>().GetStateType() });
+
+		Destroy(GetComponent<PlayerStateBase>());
+
+		switch (state) {
+			case PlayerState.Idle:
+				playerState = gameObject.AddComponent<IdleState>();
+				break;
+
+			case PlayerState.Building:
+				playerState = gameObject.AddComponent<BuildingState>();
+				break;
+
+			case PlayerState.Removing:
+				playerState = gameObject.AddComponent<RemovingState>();
+				break;
+		}
 	}
 
-	private void IsPlayerBuilding(PlayerState[] states) {
+	private void HandlePlayerBuilding(PlayerState[] states) {
 		PlayerState currState = states[0], prevState = states[1];
 
 		if (currState == PlayerState.Building) {
@@ -67,17 +84,17 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	private void HandleMouseClick(Vector3 position) {
-		if (playerState == PlayerState.Building) {
-			buildingCreation.CreateBuilding(new Vector2(position.x, position.z));
+		Vector2 gridPosition = new(position.x, position.z);
 
-			ChangeState(PlayerState.Idle);
-		}
+		playerState.HandleMouseClick(gridPosition, (bool success) => {
+			if (success) ChangeState(PlayerState.Idle);
+		});
 	}
 
 	private void HandleMouseHover(Vector3 position) {
 		Vector2 gridPosition = new(position.x, position.z);
 
-		buildingCreation.CreateBuildingHighlight(gridPosition);
+		playerState.HandleMouseHover(gridPosition);
 	}
 
 }

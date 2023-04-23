@@ -24,15 +24,7 @@ public class BuildGridTile : MonoBehaviour {
 		foreach (Vertex vertex in tileData.GetVertices()) {
 			Ray ray = new(new Vector3(vertex.x * tileSize, transform.position.y, vertex.y * tileSize), Vector3.down);
 
-			if (Physics.Raycast(ray, out RaycastHit hit, detectionDistance, terrainLayer)) {
-
-				Debug.DrawLine(new Vector3(vertex.x * tileSize, transform.position.y, vertex.y * tileSize), hit.point, Color.yellow, 10);
-
-			} else {
-
-				isAboveTerrain = false;
-
-			}
+			if (!Physics.Raycast(ray, out RaycastHit hit, detectionDistance, terrainLayer)) isAboveTerrain = false;
 		}
 
 		if (isAboveTerrain) HandleEnableTile();
