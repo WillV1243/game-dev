@@ -6,8 +6,8 @@ public class InputManager : MonoBehaviour {
 	[Header("References")]
 	public Camera playerCamera;
 
-	[Header("Layers")]
-	public LayerMask gridLayer;
+	[Header("Interact Layers")]
+	public LayerMask layers;
 
 	[Header("Actions")]
 	public Action<Vector3> OnMouseLeftClick, OnMouseLeftHold, OnMouseLeftUp;
@@ -136,7 +136,7 @@ public class InputManager : MonoBehaviour {
 
 	private Vector3? RaycastToGrid() {
 		Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-		int layerMask = gridLayer;
+		int layerMask = layers;
 
 		if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask)) {
 			Debug.DrawLine(ray.origin, hit.point, Color.magenta, 2);
