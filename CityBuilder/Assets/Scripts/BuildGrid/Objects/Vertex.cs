@@ -13,4 +13,8 @@ public class Vertex {
 	public void Enable() {
 		isDisabled = true;
 	}
+
+	public Vector2Int GetCoordinates() {
+		return new Vector2Int(x, y);
+	}
 }

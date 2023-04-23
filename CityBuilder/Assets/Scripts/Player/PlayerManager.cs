@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour {
@@ -5,6 +6,9 @@ public class PlayerManager : MonoBehaviour {
 	[Header("References")]
 	public InputManager inputManager;
 	public CameraMovement cameraMovement;
+	public BuildingCreation buildingCreation;
+
+	public Action<PlayerState[]> OnChangePlayerState;
 
 	private PlayerState playerState = PlayerState.Idle;
 
@@ -18,10 +22,28 @@ public class PlayerManager : MonoBehaviour {
 
 		inputManager.OnRotateRight += HandleRotateRight;
 		inputManager.OnRotateLeft += HandleRotateLeft;
+
+		OnChangePlayerState += IsPlayerBuilding;
 	}
 
 	public void ChangeState(PlayerState state) {
+		OnChangePlayerState.Invoke(new PlayerState[2] { state, playerState });
+
 		playerState = state;
+	}
+
+	private void IsPlayerBuilding(PlayerState[] states) {
+		PlayerState currState = states[0], prevState = states[1];
+
+		if (currState == PlayerState.Building) {
+
+			inputManager.OnMouseHover += HandleMouseHover;
+
+		} else if (currState != PlayerState.Building) {
+
+			inputManager.OnMouseHover -= HandleMouseHover;
+
+		}
 	}
 
 	private void HandleMoveForward() {
@@ -45,50 +67,17 @@ public class PlayerManager : MonoBehaviour {
 	}
 
 	private void HandleMouseClick(Vector3 position) {
-		Vector2 flattenedPosition = new(position.x, position.z);
+		if (playerState == PlayerState.Building) {
+			buildingCreation.CreateBuilding(new Vector2(position.x, position.z));
 
-		switch (playerState) {
-			case PlayerState.Idle:
-				break;
-
-			case PlayerState.TileBuilding:
-				HandleBuildTile(flattenedPosition);
-				break;
-
-			case PlayerState.PathBuilding:
-				HandleBuildPath(flattenedPosition);
-				break;
-
-			case PlayerState.NodeBuilding:
-				HandleBuildNode(flattenedPosition);
-				break;
+			ChangeState(PlayerState.Idle);
 		}
 	}
 
-	private void HandleBuildTile(Vector2 flattenedPosition) {
-		Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(flattenedPosition);
+	private void HandleMouseHover(Vector3 position) {
+		Vector2 gridPosition = new(position.x, position.z);
 
-		Tile tile = TileStore.getInstance.GetTile(tileCoordinates);
-
-		Debug.Log(tile);
-	}
-
-	private void HandleBuildPath(Vector2 flattenedPosition) {
-		Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(flattenedPosition);
-		Vector2Int[] edgeCoordinates = PlayerUtils.GetEdgeCoordinates(tileCoordinates, flattenedPosition);
-
-		Edge edge = EdgeStore.getInstance.GetEdge(edgeCoordinates);
-
-		Debug.Log(edge);
-	}
-
-	private void HandleBuildNode(Vector2 flattenPosition) {
-		Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(flattenPosition);
-		Vector2Int vertexCoordinates = PlayerUtils.GetVertexCoordinates(tileCoordinates, flattenPosition);
-
-		Vertex vertex = VertexStore.getInstance.GetVertex(vertexCoordinates);
-
-		Debug.Log(vertex);
+		buildingCreation.CreateBuildingHighlight(gridPosition);
 	}
 
 }

@@ -8,11 +8,6 @@ public class Edge {
 	public Edge(Vertex vertexA, Vertex vertexB) {
 		this.vertexA = vertexA;
 		this.vertexB = vertexB;
-
-		Vector3 start = new(vertexA.x, 0f, vertexA.y);
-		Vector3 end = new(vertexB.x, 0f, vertexB.y);
-
-		Debug.DrawLine(start, end, Color.red, 50000);
 	}
 
 	public void Enable() {

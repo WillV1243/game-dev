@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour {
 	[Header("Actions")]
 	public Action<Vector3> OnMouseLeftClick, OnMouseLeftHold, OnMouseLeftUp;
 	public Action<Vector3> OnMouseRightClick, OnMouseRightHold, OnMouseRightUp;
+	public Action<Vector3> OnMouseHover;
 	public Action OnMoveForward, OnMoveRight, OnMoveBack, OnMoveLeft;
 	public Action OnRotateRight, OnRotateLeft;
 	public Action OnZoomIn, OnZoomOut;
@@ -25,6 +26,8 @@ public class InputManager : MonoBehaviour {
 			CheckRightClickDownEvent();
 			CheckRightClickHoldEvent();
 			CheckRightClickUpEvent();
+
+			CheckMouseHover();
 		}
 
 		CheckMoveForward();
@@ -80,6 +83,12 @@ public class InputManager : MonoBehaviour {
 		if (Input.GetKey(KeyCode.Q)) {
 			OnRotateLeft.Invoke();
 		}
+	}
+
+	private void CheckMouseHover() {
+		Vector3? position = RaycastToGrid();
+
+		if (position != null) OnMouseHover?.Invoke(position.Value);
 	}
 
 	private void CheckLeftClickDownEvent() {
