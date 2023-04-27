@@ -1,90 +1,93 @@
+using Buildings;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildingState : PlayerStateBase {
+namespace Player {
 
-	private GameObject currentBuildingHighlight;
+	public class BuildingState : PlayerStateBase {
 
-	public override PlayerState GetStateType() {
-		return PlayerState.Building;
-	}
+		private GameObject currentBuilding;
 
-	public override void HandleMouseClick(Vector2 gridPosition, HandleMouseClickCallback callback = null) {
-		Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
-
-		Dictionary<Vector2Int[], Tile> tiles = TileStore.getInstance.GetTileNeighbours(rootTile, new Vector2Int(2, 2));
-
-		foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
-			if (!pair.Value.IsTileBuildable()) {
-				Debug.Log("Not buildable!!!");
-				callback(false);
-				return;
-			};
+		private void OnDestroy() {
+			if (currentBuilding != null) Destroy(currentBuilding);
 		}
 
-		InstantiateBuilding(buildingPosition);
-
-		foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
-			pair.Value.ChangeState(TileState.Occupied);
+		public override PlayerState GetStateType() {
+			return PlayerState.Building;
 		}
 
-		callback(true);
-	}
+		public override void HandleMouseClick(Vector2 gridPosition, HandleMouseClickCallback callback = null) {
+			Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
 
-	public override void HandleMouseHover(Vector2 gridPosition) {
-		Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
+			Dictionary<Vector2Int[], Tile> tiles = TileStore.getInstance.GetTileNeighbours(rootTile, new Vector2Int(2, 2));
 
-		if (currentBuildingHighlight == null) {
+			foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
+				if (!pair.Value.IsTileBuildable()) {
+					callback?.Invoke(false);
+					return;
+				};
+			}
 
-			InstantiateBuildingHighlight(gridPosition);
+			currentBuilding.GetComponent<Building>().ChangeState(Buildings.BuildingState.Complete);
 
-		} else if (currentBuildingHighlight.transform.position != buildingPosition) {
+			foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
+				pair.Value.ChangeState(TileState.Occupied);
+				pair.Value.buildingRef = currentBuilding;
+			}
 
-			MoveBuildingHighlight(buildingPosition, rootTile);
+			currentBuilding = null;
 
+			callback?.Invoke(true);
 		}
-	}
 
-	private void InstantiateBuilding(Vector3 buildingPosition) {
-		BuildingReferences playerReferences = GetComponent<BuildingReferences>();
+		public override void HandleMouseHover(Vector2 gridPosition) {
+			Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
 
-		Destroy(currentBuildingHighlight);
+			if (currentBuilding == null) {
 
-		GameObject building = Instantiate(playerReferences.buildingPrefab);
+				InstantiateBuilding(gridPosition);
 
-		building.transform.parent = playerReferences.buildingContainer.transform;
-		building.transform.position = buildingPosition;
-	}
+			} else if (currentBuilding.transform.position != buildingPosition) {
 
-	private Vector3 GetBuildingPosition(Vector2 gridPosition, out Tile rootTile) {
-		Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(gridPosition);
+				MoveBuildingHighlight(buildingPosition, rootTile);
 
-		rootTile = TileStore.getInstance.GetTile(tileCoordinates);
-
-		Vector2Int rootTileCoordinates = rootTile.vertexD.GetCoordinates();
-
-		return new(rootTileCoordinates.x, 0, rootTileCoordinates.y);
-	}
-
-	private void InstantiateBuildingHighlight(Vector3 buildingPosition) {
-		BuildingReferences playerReferences = GetComponent<BuildingReferences>();
-
-		currentBuildingHighlight = Instantiate(playerReferences.buildingHighlightPrefab);
-		currentBuildingHighlight.transform.parent = playerReferences.buildingContainer.transform;
-		currentBuildingHighlight.transform.position = buildingPosition;
-	}
-
-	private void MoveBuildingHighlight(Vector3 buildingPosition, Tile rootTile) {
-		Dictionary<Vector2Int[], Tile> tiles = TileStore.getInstance.GetTileNeighbours(rootTile, new Vector2Int(2, 2));
-
-		currentBuildingHighlight.transform.position = buildingPosition;
-
-		foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
-			if (!pair.Value.IsTileBuildable()) {
-				Debug.Log("Not buildable!!!");
-				break;
-			};
+			}
 		}
+
+		private Vector3 GetBuildingPosition(Vector2 gridPosition, out Tile rootTile) {
+			Vector2Int[] tileCoordinates = PlayerUtils.GetTileCoordinates(gridPosition);
+
+			rootTile = TileStore.getInstance.GetTile(tileCoordinates);
+
+			Vector2Int rootTileCoordinates = rootTile.vertexD.GetCoordinates();
+
+			return new(rootTileCoordinates.x, 0, rootTileCoordinates.y);
+		}
+
+		private void InstantiateBuilding(Vector3 buildingPosition) {
+			BuildingReferences buildingReferences = GetComponent<BuildingReferences>();
+
+			currentBuilding = Instantiate(buildingReferences.buildingPrefab);
+
+			currentBuilding.transform.parent = buildingReferences.buildingContainer.transform;
+			currentBuilding.transform.position = buildingPosition;
+		}
+
+		private void MoveBuildingHighlight(Vector3 buildingPosition, Tile rootTile) {
+			Dictionary<Vector2Int[], Tile> tiles = TileStore.getInstance.GetTileNeighbours(rootTile, new Vector2Int(2, 2));
+
+			currentBuilding.transform.position = buildingPosition;
+
+			foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
+				if (!pair.Value.IsTileBuildable()) {
+					currentBuilding.GetComponent<Building>().ChangeState(Buildings.BuildingState.Removing);
+					return;
+				};
+			}
+
+			currentBuilding.GetComponent<Building>().ChangeState(Buildings.BuildingState.Highlight);
+		}
+
 	}
 
 }

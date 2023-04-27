@@ -8,10 +8,6 @@ public class BuildGridTile : MonoBehaviour {
 	[Header("Layers")]
 	public LayerMask terrainLayer;
 
-	[Header("Materials")]
-	public Material tileMaterial;
-	public Material disabledTileMaterial;
-
 	[Header("Settings")]
 	public float detectionDistance;
 
@@ -32,6 +28,5 @@ public class BuildGridTile : MonoBehaviour {
 
 	private void HandleEnableTile() {
 		tileData.Enable();
-		tileObject.GetComponent<Renderer>().material = tileMaterial;
 	}
 }

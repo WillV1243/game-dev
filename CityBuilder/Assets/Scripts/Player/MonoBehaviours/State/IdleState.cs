@@ -1,13 +1,17 @@
 using UnityEngine;
 
-public class IdleState : PlayerStateBase {
+namespace Player {
 
-	public override PlayerState GetStateType() {
-		return PlayerState.Idle;
+	public class IdleState : PlayerStateBase {
+
+		public override PlayerState GetStateType() {
+			return PlayerState.Idle;
+		}
+
+		public override void HandleMouseClick(Vector2 gridPosition, HandleMouseClickCallback callback = null) { }
+
+		public override void HandleMouseHover(Vector2 gridPosition) { }
+
 	}
-
-	public override void HandleMouseClick(Vector2 gridPosition, HandleMouseClickCallback callback = null) { }
-
-	public override void HandleMouseHover(Vector2 gridPosition) { }
 
 }

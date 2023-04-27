@@ -104,4 +104,28 @@ public class TileStore {
 
 		return tiles;
 	}
+
+	public Dictionary<Vector2Int[], Tile> GetTilesWithBuildingRef(Tile rootTile, GameObject buildingRef) {
+		Vector2Int startingVertex = rootTile.vertexA.GetCoordinates();
+		Dictionary<Vector2Int[], Tile> tiles = new Dictionary<Vector2Int[], Tile>(new Vector2IntArrayComparer());
+
+		for (int y = startingVertex.y - 5; y < startingVertex.y + 5; y++) {
+			for (int x = startingVertex.x - 5; x < startingVertex.x + 5; x++) {
+
+				Vector2Int A = new(x, y);
+				Vector2Int B = new(x + 1, y);
+				Vector2Int C = new(x + 1, y - 1);
+				Vector2Int D = new(x, y - 1);
+
+				Vector2Int[] coordinates = new Vector2Int[4] { A, B, C, D };
+
+				Tile tile = GetTile(coordinates);
+
+				if (tile.buildingRef == buildingRef) tiles.Add(coordinates, tile);
+
+			}
+		}
+
+		return tiles;
+	}
 }

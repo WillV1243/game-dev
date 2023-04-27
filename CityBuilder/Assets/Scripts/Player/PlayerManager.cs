@@ -1,100 +1,90 @@
 using System;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour {
+namespace Player {
 
-	[Header("References")]
-	public InputManager inputManager;
-	public CameraMovement cameraMovement;
+	public class PlayerManager : MonoBehaviour {
 
-	public Action<PlayerState[]> OnChangePlayerState;
+		[Header("References")]
+		public InputManager inputManager;
+		public CameraMovement cameraMovement;
 
-	private PlayerStateBase playerState;
+		public Action<PlayerState[]> OnChangePlayerState;
 
-	private void Start() {
-		playerState = GetComponent<PlayerStateBase>();
+		private PlayerStateBase playerState;
 
-		inputManager.OnMouseLeftClick += HandleMouseClick;
+		private void Start() {
+			playerState = GetComponent<PlayerStateBase>();
 
-		inputManager.OnMoveForward += HandleMoveForward;
-		inputManager.OnMoveRight += HandleMoveRight;
-		inputManager.OnMoveBack += HandleMoveBack;
-		inputManager.OnMoveLeft += HandleMoveLeft;
+			inputManager.OnMouseLeftClick += HandleMouseClick;
 
-		inputManager.OnRotateRight += HandleRotateRight;
-		inputManager.OnRotateLeft += HandleRotateLeft;
+			inputManager.OnMoveForward += HandleMoveForward;
+			inputManager.OnMoveRight += HandleMoveRight;
+			inputManager.OnMoveBack += HandleMoveBack;
+			inputManager.OnMoveLeft += HandleMoveLeft;
 
-		OnChangePlayerState += HandlePlayerBuilding;
-	}
-
-	public void ChangeState(PlayerState state) {
-		if (state == playerState.GetStateType()) return;
-
-		OnChangePlayerState.Invoke(new PlayerState[2] { state, GetComponent<PlayerStateBase>().GetStateType() });
-
-		Destroy(GetComponent<PlayerStateBase>());
-
-		switch (state) {
-			case PlayerState.Idle:
-				playerState = gameObject.AddComponent<IdleState>();
-				break;
-
-			case PlayerState.Building:
-				playerState = gameObject.AddComponent<BuildingState>();
-				break;
-
-			case PlayerState.Removing:
-				playerState = gameObject.AddComponent<RemovingState>();
-				break;
-		}
-	}
-
-	private void HandlePlayerBuilding(PlayerState[] states) {
-		PlayerState currState = states[0], prevState = states[1];
-
-		if (currState == PlayerState.Building) {
+			inputManager.OnRotateRight += HandleRotateRight;
+			inputManager.OnRotateLeft += HandleRotateLeft;
 
 			inputManager.OnMouseHover += HandleMouseHover;
-
-		} else if (currState != PlayerState.Building) {
-
-			inputManager.OnMouseHover -= HandleMouseHover;
-
 		}
-	}
 
-	private void HandleMoveForward() {
-		cameraMovement.MoveCamera(transform.forward);
-	}
-	private void HandleMoveRight() {
-		cameraMovement.MoveCamera(transform.right);
-	}
-	private void HandleMoveBack() {
-		cameraMovement.MoveCamera(-transform.forward);
-	}
-	private void HandleMoveLeft() {
-		cameraMovement.MoveCamera(-transform.right);
-	}
+		public void ChangeState(PlayerState state) {
+			if (state == playerState.GetStateType()) return;
 
-	private void HandleRotateLeft() {
-		cameraMovement.RotateCamera(RotationDirection.Left);
-	}
-	private void HandleRotateRight() {
-		cameraMovement.RotateCamera(RotationDirection.Right);
-	}
+			OnChangePlayerState?.Invoke(new PlayerState[2] { state, GetComponent<PlayerStateBase>().GetStateType() });
 
-	private void HandleMouseClick(Vector3 position) {
-		Vector2 gridPosition = new(position.x, position.z);
+			Destroy(GetComponent<PlayerStateBase>());
 
-		playerState.HandleMouseClick(gridPosition, (bool success) => {
-			if (success) ChangeState(PlayerState.Idle);
-		});
-	}
+			switch (state) {
+				case PlayerState.Idle:
+					playerState = gameObject.AddComponent<IdleState>();
+					break;
 
-	private void HandleMouseHover(Vector3 position) {
-		Vector2 gridPosition = new(position.x, position.z);
+				case PlayerState.Building:
+					playerState = gameObject.AddComponent<BuildingState>();
+					break;
 
-		playerState.HandleMouseHover(gridPosition);
+				case PlayerState.Removing:
+					playerState = gameObject.AddComponent<RemovingState>();
+					break;
+			}
+		}
+
+		private void HandleMoveForward() {
+			cameraMovement.MoveCamera(transform.forward);
+		}
+		private void HandleMoveRight() {
+			cameraMovement.MoveCamera(transform.right);
+		}
+		private void HandleMoveBack() {
+			cameraMovement.MoveCamera(-transform.forward);
+		}
+		private void HandleMoveLeft() {
+			cameraMovement.MoveCamera(-transform.right);
+		}
+
+		private void HandleRotateLeft() {
+			cameraMovement.RotateCamera(RotationDirection.Left);
+		}
+		private void HandleRotateRight() {
+			cameraMovement.RotateCamera(RotationDirection.Right);
+		}
+
+		private void HandleMouseClick(Vector3 position) {
+			Vector2 gridPosition = new(position.x, position.z);
+
+			playerState.HandleMouseClick(gridPosition, (bool success) => {
+				if (success) ChangeState(PlayerState.Idle);
+			});
+		}
+
+		private void HandleMouseHover(Vector3 position) {
+			Vector2 gridPosition = new(position.x, position.z);
+
+			playerState.HandleMouseHover(gridPosition);
+		}
+
 	}
 
 }

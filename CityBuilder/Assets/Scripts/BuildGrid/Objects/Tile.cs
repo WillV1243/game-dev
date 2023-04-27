@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Tile {
 	/*
 								AB
@@ -12,6 +14,8 @@ public class Tile {
 	*/
 	public Vertex vertexA, vertexB, vertexC, vertexD;
 	public Edge edgeAB, edgeBC, edgeDC, edgeAD;
+
+	public GameObject buildingRef = null;
 
 	private TileState tileState = TileState.Disabled;
 
@@ -31,8 +35,10 @@ public class Tile {
 		return tileState;
 	}
 
-	public void ChangeState(TileState state) {
+	public void ChangeState(TileState state, GameObject buildingRef = null) {
 		tileState = state;
+
+		if (state == TileState.Occupied && buildingRef) this.buildingRef = buildingRef;
 	}
 
 	public Vertex[] GetVertices() {
@@ -44,7 +50,7 @@ public class Tile {
 	}
 
 	public bool IsTileBuildable() {
-		return tileState != TileState.Disabled && tileState != TileState.Occupied;
+		return tileState == TileState.Unoccupied;
 	}
 
 	public void Enable() {
@@ -59,5 +65,15 @@ public class Tile {
 		edgeBC.Enable();
 		edgeDC.Enable();
 		edgeAD.Enable();
+	}
+
+	public override string ToString() {
+		string label = "Tile | ";
+
+		foreach (Vertex vertex in GetVertices()) {
+			label += vertex.GetCoordinates().ToString() + " ";
+		}
+
+		return label + " State: " + tileState.ToString();
 	}
 }
