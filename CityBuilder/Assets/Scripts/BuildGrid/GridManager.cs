@@ -14,7 +14,6 @@ public class GridManager : MonoBehaviour {
 
 	[Header("Materials")]
 	public Material tileMaterial;
-	public Material disabledTileMaterial;
 
 	private void Start() {
 		InitializeGrid();
