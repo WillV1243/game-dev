@@ -1,38 +1,26 @@
-using System;
 using UnityEngine;
 
 namespace Player {
 
 	public class PlayerManager : MonoBehaviour {
 
-		[Header("References")]
-		public InputManager inputManager;
-		public CameraMovement cameraMovement;
-
-		public Action<PlayerState[]> OnChangePlayerState;
+		public PlayerReferences references;
+		public PlayerEvents events;
 
 		private PlayerStateBase playerState;
 
 		private void Start() {
 			playerState = GetComponent<PlayerStateBase>();
+		}
 
-			inputManager.OnMouseLeftClick += HandleMouseClick;
-
-			inputManager.OnMoveForward += HandleMoveForward;
-			inputManager.OnMoveRight += HandleMoveRight;
-			inputManager.OnMoveBack += HandleMoveBack;
-			inputManager.OnMoveLeft += HandleMoveLeft;
-
-			inputManager.OnRotateRight += HandleRotateRight;
-			inputManager.OnRotateLeft += HandleRotateLeft;
-
-			inputManager.OnMouseHover += HandleMouseHover;
+		public PlayerStateBase GetState() {
+			return playerState;
 		}
 
 		public void ChangeState(PlayerState state) {
 			if (state == playerState.GetStateType()) return;
 
-			OnChangePlayerState?.Invoke(new PlayerState[2] { state, GetComponent<PlayerStateBase>().GetStateType() });
+			events.OnChangePlayerState?.Invoke(new PlayerState[2] { state, GetComponent<PlayerStateBase>().GetStateType() });
 
 			Destroy(GetComponent<PlayerStateBase>());
 
@@ -49,40 +37,6 @@ namespace Player {
 					playerState = gameObject.AddComponent<RemovingState>();
 					break;
 			}
-		}
-
-		private void HandleMoveForward() {
-			cameraMovement.MoveCamera(transform.forward);
-		}
-		private void HandleMoveRight() {
-			cameraMovement.MoveCamera(transform.right);
-		}
-		private void HandleMoveBack() {
-			cameraMovement.MoveCamera(-transform.forward);
-		}
-		private void HandleMoveLeft() {
-			cameraMovement.MoveCamera(-transform.right);
-		}
-
-		private void HandleRotateLeft() {
-			cameraMovement.RotateCamera(RotationDirection.Left);
-		}
-		private void HandleRotateRight() {
-			cameraMovement.RotateCamera(RotationDirection.Right);
-		}
-
-		private void HandleMouseClick(Vector3 position) {
-			Vector2 gridPosition = new(position.x, position.z);
-
-			playerState.HandleMouseClick(gridPosition, (bool success) => {
-				if (success) ChangeState(PlayerState.Idle);
-			});
-		}
-
-		private void HandleMouseHover(Vector3 position) {
-			Vector2 gridPosition = new(position.x, position.z);
-
-			playerState.HandleMouseHover(gridPosition);
 		}
 
 	}

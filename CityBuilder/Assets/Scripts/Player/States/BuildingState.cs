@@ -65,11 +65,9 @@ namespace Player {
 		}
 
 		private void InstantiateBuilding(Vector3 buildingPosition) {
-			BuildingReferences buildingReferences = GetComponent<BuildingReferences>();
+			currentBuilding = Instantiate(player.references.buildingPrefab);
 
-			currentBuilding = Instantiate(buildingReferences.buildingPrefab);
-
-			currentBuilding.transform.parent = buildingReferences.buildingContainer.transform;
+			currentBuilding.transform.parent = player.references.buildingContainer.transform;
 			currentBuilding.transform.position = buildingPosition;
 		}
 

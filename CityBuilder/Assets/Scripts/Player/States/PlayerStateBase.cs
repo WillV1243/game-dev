@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Player {
 
-	public abstract class PlayerStateBase : MonoBehaviour {
+	public abstract class PlayerStateBase : PlayerSystemBase {
 		public abstract PlayerState GetStateType();
 
 		public delegate void HandleMouseClickCallback(bool success);

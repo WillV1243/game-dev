@@ -1,13 +1,20 @@
+using System;
 using UnityEngine;
 
 namespace Player {
 
-	public class BuildingReferences : MonoBehaviour {
-		[Header("References")]
+	[Serializable]
+	public struct PlayerReferences {
+
+		[Header("Cameras")]
+		public Camera mainCamera;
+
+		[Header("Containers")]
 		public GameObject buildingContainer;
 
 		[Header("Prefabs")]
 		public GameObject buildingPrefab;
+
 	}
 
 }

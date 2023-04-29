@@ -12,9 +12,6 @@ public class GridManager : MonoBehaviour {
 	public GameObject tilePrefab;
 	public Transform gridContainer;
 
-	[Header("Materials")]
-	public Material tileMaterial;
-
 	private void Start() {
 		InitializeGrid();
 		CreateGrid();

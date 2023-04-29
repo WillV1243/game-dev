@@ -4,14 +4,14 @@ using UnityEngine;
 public class UIManager : MonoBehaviour {
 
 	[Header("References")]
-	public PlayerManager playerManager;
+	public PlayerManager player;
 
 	public void ChangePlayerStateBuilding() {
-		playerManager.ChangeState(PlayerState.Building);
+		player.ChangeState(PlayerState.Building);
 	}
 
 	public void ChangePlayerStateRemoving() {
-		playerManager.ChangeState(PlayerState.Removing);
+		player.ChangeState(PlayerState.Removing);
 	}
 
 }
