@@ -1,29 +1,42 @@
 using Buildings;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player {
 
-	public class BuildingState : PlayerStateBase {
+	public class ConstuctBuilding : PlayerSystemBase {
+
+		[Header("Settings")]
+		public BuildingRotation currentBuildingRotation = BuildingRotation.Down;
 
 		private GameObject currentBuilding;
 
-		private void OnDestroy() {
-			if (currentBuilding != null) Destroy(currentBuilding);
+		private void Start() {
+			player.events.OnChangeCursorState += HandleDestoryBuilding;
+
+			player.events.OnConstructBuilding += HandleContructBuilding;
+			player.events.OnRotateBuilding += HandleRotateBuilding;
+			player.events.OnConstructBuildingHighlight += HandleConstructBuildingHighlight;
 		}
 
-		public override PlayerState GetStateType() {
-			return PlayerState.Building;
+		private void HandleDestoryBuilding(CursorState[] states) {
+			if (states[0] == CursorState.Building) return;
+
+			if (currentBuilding == null) return;
+
+			Destroy(currentBuilding);
+			currentBuilding = null;
 		}
 
-		public override void HandleMouseClick(Vector2 gridPosition, HandleMouseClickCallback callback = null) {
-			Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
+		private void HandleContructBuilding(BuildingBlueprint blueprint) {
+			BuildingRotation? rotation = blueprint.Rotation ?? currentBuildingRotation;
 
-			Dictionary<Vector2Int[], Tile> tiles = TileStore.getInstance.GetTileNeighbours(rootTile, new Vector2Int(2, 2));
+			// TODO Change GetTileNeighbours to handle rotation
+			Dictionary<Vector2Int[], Tile> tiles = TileStore.getInstance.GetTileNeighbours(blueprint.RootTile, new Vector2Int(2, 2));
 
 			foreach (KeyValuePair<Vector2Int[], Tile> pair in tiles) {
 				if (!pair.Value.IsTileBuildable()) {
-					callback?.Invoke(false);
 					return;
 				};
 			}
@@ -37,10 +50,21 @@ namespace Player {
 
 			currentBuilding = null;
 
-			callback?.Invoke(true);
+			player.ChangeCursorState(CursorState.Idle);
 		}
 
-		public override void HandleMouseHover(Vector2 gridPosition) {
+		private void HandleRotateBuilding() {
+			int currentIndex = (int)currentBuildingRotation;
+
+			int rotationsLength = Enum.GetValues(typeof(BuildingRotation)).Length;
+			int nextRotation = (currentIndex + 1) % rotationsLength;
+
+			currentBuildingRotation = (BuildingRotation)nextRotation;
+
+			// TODO then cause rotation in gameobject
+		}
+
+		private void HandleConstructBuildingHighlight(Vector2 gridPosition) {
 			Vector3 buildingPosition = GetBuildingPosition(gridPosition, out Tile rootTile);
 
 			if (currentBuilding == null) {
@@ -65,7 +89,7 @@ namespace Player {
 		}
 
 		private void InstantiateBuilding(Vector3 buildingPosition) {
-			currentBuilding = Instantiate(player.references.buildingPrefab);
+			currentBuilding = Instantiate(player.references.buildings[0]);
 
 			currentBuilding.transform.parent = player.references.buildingContainer.transform;
 			currentBuilding.transform.position = buildingPosition;

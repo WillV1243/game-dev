@@ -13,9 +13,14 @@ namespace Player {
 				CheckLeftClickDownEvent();
 				CheckLeftClickHoldEvent();
 				CheckLeftClickUpEvent();
+
 				CheckRightClickDownEvent();
 				CheckRightClickHoldEvent();
 				CheckRightClickUpEvent();
+
+				CheckMiddleClickDownEvent();
+				CheckMiddleClickHoldEvent();
+				CheckMiddleClickUpEvent();
 
 				CheckMouseHover();
 			}
@@ -34,52 +39,74 @@ namespace Player {
 
 		private void CheckLeftClickDownEvent() {
 			if (Input.GetMouseButtonDown(0)) {
-				Vector3? position = RaycastToGrid();
+				CursorTarget cursorTarget = RaycastToWorld();
 
-				if (position != null) player.events.OnMouseLeftClick?.Invoke(position.Value);
+				if (cursorTarget != null) player.events.OnMouseLeftClick?.Invoke(cursorTarget);
 			}
 		}
 		private void CheckLeftClickHoldEvent() {
 			if (Input.GetMouseButton(0)) {
-				Vector3? position = RaycastToGrid();
+				CursorTarget cursorTarget = RaycastToWorld();
 
-				if (position != null) player.events.OnMouseLeftHold?.Invoke(position.Value);
+				if (cursorTarget != null) player.events.OnMouseLeftHold?.Invoke(cursorTarget);
 			}
 		}
 		private void CheckLeftClickUpEvent() {
 			if (Input.GetMouseButtonUp(0)) {
-				Vector3? position = RaycastToGrid();
+				CursorTarget cursorTarget = RaycastToWorld();
 
-				if (position != null) player.events.OnMouseLeftUp?.Invoke(position.Value);
+				if (cursorTarget != null) player.events.OnMouseLeftUp?.Invoke(cursorTarget);
 			}
 		}
 
 		private void CheckRightClickDownEvent() {
 			if (Input.GetMouseButtonDown(1)) {
-				Vector3? position = RaycastToGrid();
+				CursorTarget cursorTarget = RaycastToWorld();
 
-				if (position != null) player.events.OnMouseRightClick?.Invoke(position.Value);
+				if (cursorTarget != null) player.events.OnMouseRightClick?.Invoke(cursorTarget);
 			}
 		}
 		private void CheckRightClickHoldEvent() {
 			if (Input.GetMouseButton(1)) {
-				Vector3? position = RaycastToGrid();
+				CursorTarget cursorTarget = RaycastToWorld();
 
-				if (position != null) player.events.OnMouseRightHold?.Invoke(position.Value);
+				if (cursorTarget != null) player.events.OnMouseRightHold?.Invoke(cursorTarget);
 			}
 		}
 		private void CheckRightClickUpEvent() {
 			if (Input.GetMouseButtonUp(1)) {
-				Vector3? position = RaycastToGrid();
+				CursorTarget cursorTarget = RaycastToWorld();
 
-				if (position != null) player.events.OnMouseRightUp?.Invoke(position.Value);
+				if (cursorTarget != null) player.events.OnMouseRightUp?.Invoke(cursorTarget);
+			}
+		}
+
+		private void CheckMiddleClickDownEvent() {
+			if (Input.GetMouseButtonDown(2)) {
+				CursorTarget cursorTarget = RaycastToWorld();
+
+				if (cursorTarget != null) player.events.OnMouseMiddleClick?.Invoke(cursorTarget);
+			}
+		}
+		private void CheckMiddleClickHoldEvent() {
+			if (Input.GetMouseButton(2)) {
+				CursorTarget cursorTarget = RaycastToWorld();
+
+				if (cursorTarget != null) player.events.OnMouseMiddleHold?.Invoke(cursorTarget);
+			}
+		}
+		private void CheckMiddleClickUpEvent() {
+			if (Input.GetMouseButtonUp(2)) {
+				CursorTarget cursorTarget = RaycastToWorld();
+
+				if (cursorTarget != null) player.events.OnMouseMiddleUp?.Invoke(cursorTarget);
 			}
 		}
 
 		private void CheckMouseHover() {
-			Vector3? position = RaycastToGrid();
+			CursorTarget cursorTarget = RaycastToWorld();
 
-			if (position != null) player.events.OnMouseHover?.Invoke(position.Value);
+			if (cursorTarget != null) player.events.OnMouseHover?.Invoke(cursorTarget);
 		}
 
 		private void CheckMoveForward() {
@@ -125,14 +152,14 @@ namespace Player {
 			}
 		}
 
-		private Vector3? RaycastToGrid() {
+		private CursorTarget RaycastToWorld() {
 			Ray ray = player.references.mainCamera.ScreenPointToRay(Input.mousePosition);
 			int layerMask = layers;
 
 			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask)) {
 				Debug.DrawLine(ray.origin, hit.point, Color.magenta, 2);
 
-				return hit.point;
+				return new CursorTarget(hit);
 			}
 
 			return null;
@@ -141,4 +168,5 @@ namespace Player {
 	}
 
 }
+
 

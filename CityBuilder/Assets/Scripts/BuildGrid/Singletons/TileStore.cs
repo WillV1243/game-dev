@@ -6,6 +6,9 @@ public class TileStore {
 
 	private Dictionary<Vector2Int[], Tile> tiles = new Dictionary<Vector2Int[], Tile>(new Vector2IntArrayComparer());
 
+	private Vector2Int gridOffset;
+	private Vector2Int gridSize;
+
 	public static TileStore getInstance {
 		get {
 			if (instance == null) {
@@ -15,7 +18,10 @@ public class TileStore {
 		}
 	}
 
-	public void CreateStore(Vector2Int gridOffset, Vector2Int gridSize) {
+	public void CreateStore(Vector2Int initialGridOffset, Vector2Int initialGridSize) {
+		gridOffset = initialGridOffset;
+		gridSize = initialGridSize;
+
 		for (int y = gridOffset.y; y <= gridOffset.y + gridSize.y; y++) {
 			for (int x = gridOffset.x; x <= gridOffset.x + gridSize.x; x++) {
 				/*
@@ -105,12 +111,11 @@ public class TileStore {
 		return tiles;
 	}
 
-	public Dictionary<Vector2Int[], Tile> GetTilesWithBuildingRef(Tile rootTile, GameObject buildingRef) {
-		Vector2Int startingVertex = rootTile.vertexA.GetCoordinates();
+	public Dictionary<Vector2Int[], Tile> GetTilesWithBuildingRef(GameObject buildingRef) {
 		Dictionary<Vector2Int[], Tile> tiles = new Dictionary<Vector2Int[], Tile>(new Vector2IntArrayComparer());
 
-		for (int y = startingVertex.y - 5; y < startingVertex.y + 5; y++) {
-			for (int x = startingVertex.x - 5; x < startingVertex.x + 5; x++) {
+		for (int y = gridOffset.y; y <= gridOffset.y + gridSize.y; y++) {
+			for (int x = gridOffset.x; x <= gridOffset.x + gridSize.x; x++) {
 
 				Vector2Int A = new(x, y);
 				Vector2Int B = new(x + 1, y);

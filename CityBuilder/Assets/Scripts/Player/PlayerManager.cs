@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player {
@@ -7,36 +8,45 @@ namespace Player {
 		public PlayerReferences references;
 		public PlayerEvents events;
 
-		private PlayerStateBase playerState;
+		public CursorStateBase cursor;
 
-		private void Start() {
-			playerState = GetComponent<PlayerStateBase>();
+		public BuildingType constructingBuilding;
+		public GameObject selectedBuilding;
+
+		private void Awake() {
+			cursor = GetComponent<CursorStateBase>();
+
+			InitializeBuildingPrefabs();
 		}
 
-		public PlayerStateBase GetState() {
-			return playerState;
+		private void InitializeBuildingPrefabs() {
+			references.buildings = new List<GameObject>(Resources.LoadAll<GameObject>("Buildings"));
 		}
 
-		public void ChangeState(PlayerState state) {
-			if (state == playerState.GetStateType()) return;
+		public void ChangeCursorState(CursorState state) {
+			if (state == cursor.State) return;
 
-			events.OnChangePlayerState?.Invoke(new PlayerState[2] { state, GetComponent<PlayerStateBase>().GetStateType() });
+			events.OnChangeCursorState?.Invoke(new CursorState[2] { state, GetComponent<CursorStateBase>().State });
 
-			Destroy(GetComponent<PlayerStateBase>());
+			Destroy(GetComponent<CursorStateBase>());
 
 			switch (state) {
-				case PlayerState.Idle:
-					playerState = gameObject.AddComponent<IdleState>();
+				case CursorState.Idle:
+					cursor = gameObject.AddComponent<IdleState>();
 					break;
 
-				case PlayerState.Building:
-					playerState = gameObject.AddComponent<BuildingState>();
+				case CursorState.Building:
+					cursor = gameObject.AddComponent<BuildingState>();
 					break;
 
-				case PlayerState.Removing:
-					playerState = gameObject.AddComponent<RemovingState>();
+				case CursorState.Removing:
+					cursor = gameObject.AddComponent<RemovingState>();
 					break;
 			}
+		}
+
+		public void ChangeConstructingBuilding(int buildingKey) {
+			constructingBuilding = (BuildingType)buildingKey;
 		}
 
 	}

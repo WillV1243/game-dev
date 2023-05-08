@@ -17,7 +17,7 @@ public class Tile {
 
 	public GameObject buildingRef = null;
 
-	private TileState tileState = TileState.Disabled;
+	private TileState tileState = TileState.Unoccupied;
 
 	public Tile(Vertex[] vertices, Edge[] edges) {
 		vertexA = vertices[0];
@@ -51,6 +51,20 @@ public class Tile {
 
 	public bool IsTileBuildable() {
 		return tileState == TileState.Unoccupied;
+	}
+
+	public void Disable() {
+		ChangeState(TileState.Disabled);
+
+		vertexA.Disable();
+		vertexB.Disable();
+		vertexC.Disable();
+		vertexD.Disable();
+
+		edgeAB.Disable();
+		edgeBC.Disable();
+		edgeDC.Disable();
+		edgeAD.Disable();
 	}
 
 	public void Enable() {

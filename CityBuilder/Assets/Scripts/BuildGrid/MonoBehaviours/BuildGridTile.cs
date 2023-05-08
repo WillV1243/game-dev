@@ -15,18 +15,18 @@ public class BuildGridTile : MonoBehaviour {
 	public float tileSize;
 
 	public void CheckIfAboveTerrain() {
-		bool isAboveTerrain = true;
+		bool isAboveTerrain = false;
 
 		foreach (Vertex vertex in tileData.GetVertices()) {
-			Ray ray = new(new Vector3(vertex.x * tileSize, transform.position.y, vertex.y * tileSize), Vector3.down);
+			Ray ray = new(new Vector3(vertex.x * tileSize, -0.1f, vertex.y * tileSize), Vector3.down);
 
-			if (!Physics.Raycast(ray, out RaycastHit hit, detectionDistance, terrainLayer)) isAboveTerrain = false;
+			if (Physics.Raycast(ray, out RaycastHit hit, detectionDistance, terrainLayer)) isAboveTerrain = true;
 		}
 
-		if (isAboveTerrain) HandleEnableTile();
+		if (isAboveTerrain) HandleDisableTile();
 	}
 
-	private void HandleEnableTile() {
-		tileData.Enable();
+	private void HandleDisableTile() {
+		tileData.Disable();
 	}
 }

@@ -12,7 +12,7 @@ public class GridManager : MonoBehaviour {
 	public GameObject tilePrefab;
 	public Transform gridContainer;
 
-	private void Start() {
+	private void Awake() {
 		InitializeGrid();
 		CreateGrid();
 	}

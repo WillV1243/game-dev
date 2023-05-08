@@ -11,6 +11,10 @@ public class Vertex {
 	}
 
 	public void Enable() {
+		isDisabled = false;
+	}
+
+	public void Disable() {
 		isDisabled = true;
 	}
 

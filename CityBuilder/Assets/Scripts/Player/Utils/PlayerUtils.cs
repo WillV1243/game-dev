@@ -46,7 +46,7 @@ namespace Player {
 		}
 
 		public static Vector2Int[] GetTileCoordinates(Vector2 position) {
-			// going to need to add something here for variable tile size
+			// TODO going to need to add something here for variable tile size
 			Vector2Int A = new(Mathf.FloorToInt(position.x), Mathf.CeilToInt(position.y));
 			Vector2Int B = new(Mathf.CeilToInt(position.x), Mathf.CeilToInt(position.y));
 			Vector2Int C = new(Mathf.CeilToInt(position.x), Mathf.FloorToInt(position.y));

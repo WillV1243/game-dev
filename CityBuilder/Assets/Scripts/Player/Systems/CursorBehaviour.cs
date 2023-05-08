@@ -1,26 +1,23 @@
-using UnityEngine;
-
 namespace Player {
 
 	public class CursorBehaviour : PlayerSystemBase {
 
 		void Start() {
 			player.events.OnMouseLeftClick += HandleMouseClick;
+			player.events.OnMouseMiddleClick += HandleMouseMiddleClick;
 			player.events.OnMouseHover += HandleMouseHover;
 		}
 
-		private void HandleMouseClick(Vector3 position) {
-			Vector2 gridPosition = new(position.x, position.z);
-
-			player.GetState().HandleMouseClick(gridPosition, (bool success) => {
-				if (success) player.ChangeState(PlayerState.Idle);
-			});
+		private void HandleMouseClick(CursorTarget cursorTarget) {
+			player.cursor.HandleMouseClick(cursorTarget);
 		}
 
-		private void HandleMouseHover(Vector3 position) {
-			Vector2 gridPosition = new(position.x, position.z);
+		private void HandleMouseHover(CursorTarget cursorTarget) {
+			player.cursor.HandleMouseHover(cursorTarget);
+		}
 
-			player.GetState().HandleMouseHover(gridPosition);
+		private void HandleMouseMiddleClick(CursorTarget cursorTarget) {
+			player.cursor.HandleMouseMiddleClick(cursorTarget);
 		}
 
 	}

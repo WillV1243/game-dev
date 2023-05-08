@@ -12,4 +12,8 @@ public class Edge {
 		isDisabled = false;
 	}
 
+	public void Disable() {
+		isDisabled = true;
+	}
+
 }

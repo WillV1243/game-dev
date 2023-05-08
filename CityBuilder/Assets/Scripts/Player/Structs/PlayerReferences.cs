@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player {
@@ -13,7 +14,7 @@ namespace Player {
 		public GameObject buildingContainer;
 
 		[Header("Prefabs")]
-		public GameObject buildingPrefab;
+		public List<GameObject> buildings;
 
 	}
 
